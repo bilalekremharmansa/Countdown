@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/layout_padding"
+    tools:context="bilalekremharmansa.yeninesilarge.com.countdown.activities.WelcomeActivity">
+
+    <TextView
+        android:id="@+id/txtWelcome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/welcome"
+        android:gravity="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="50dp"
+
+        />
+
+    <EditText
+        android:id="@+id/editTxtUsername"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="@string/hint_username"
+
+        android:layout_centerHorizontal="true"
+
+        android:layout_below="@+id/txtWelcome"
+        android:layout_marginBottom="40dp"
+
+        />
+
+    <TextView
+        android:id="@+id/txtGameMode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/game_mode"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+        android:gravity="center"
+
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/editTxtUsername"
+        android:layout_marginBottom="20dp"
+
+
+        />
+
+    <ToggleButton
+        android:id="@+id/togBtnGameMode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_below="@id/txtGameMode"
+        android:layout_centerHorizontal="true"
+
+        android:textOn="@string/word_game"
+        android:textOff="@string/number_game"
+
+        />
+
+
+    <Button
+        android:id="@+id/btnNext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:text="@string/next" />
+
+</RelativeLayout>

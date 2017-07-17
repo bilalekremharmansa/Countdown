@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Countdown</string>
+    <string name="welcome">Bir Kelime Bir İşlem\nOyununa Hoşgeldiniz</string>
+    <string name="hint_username">Lütfen, kullanıcı adınızı girin.</string>
+    <string name="next">İleri</string>
+    <string name="game_mode">Hangi oyunu oynamak istediğinizi seçin.</string>
+    <string name="word_game">Bir Kelime</string>
+    <string name="number_game">Bir İşlem</string>
+
+    <string name="how_many_large_num">Kaç adet büyük sayı istiyorsunuz ?</string>
+    <string name="get_cards">0, lütfen</string>
+    <string name="please">, lütfen</string>
+</resources>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/layout_padding"
+    tools:context="bilalekremharmansa.yeninesilarge.com.countdown.activities.SetupNumberGameActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/how_many_large_num"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+
+        android:layout_alignParentLeft="true"
+
+        android:id="@+id/txtHowManyLargeInfo" />
+
+    <bilalekremharmansa.yeninesilarge.com.countdown.CustomNumberPicker
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/numPickLargeNumbers"
+        max="4"
+        min="0"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true" />
+
+    <Button
+        android:id="@+id/btnGetCards"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/get_cards"
+
+        android:layout_below="@+id/txtHowManyLargeInfo"
+
+         />
+
+
+
+
+
+</RelativeLayout>
