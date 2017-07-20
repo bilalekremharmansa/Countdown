@@ -10,4 +10,7 @@
     <string name="how_many_large_num">Kaç adet büyük sayı istiyorsunuz ?</string>
     <string name="get_cards">0, lütfen</string>
     <string name="please">, lütfen</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

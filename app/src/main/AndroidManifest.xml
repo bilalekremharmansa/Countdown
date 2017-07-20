@@ -16,7 +16,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.NumberGameActivity" />
-        <activity android:name=".activities.SetupNumberGameActivity"></activity>
+        <activity android:name=".activities.SetupNumberGameActivity" />
+        <activity android:name=".activities.NumberGameCardListActivity" />
     </application>
 
 </manifest>

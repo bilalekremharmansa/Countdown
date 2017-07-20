@@ -37,9 +37,9 @@ public class WelcomeActivity extends AppCompatActivity{
                 player.setName(editTxtUsername.getText().toString());
 
                 Intent intent = new Intent(WelcomeActivity.this,SetupNumberGameActivity.class);
-                intent.putExtra(NumberGameActivity.EXTRA_PLAYER,player);
-                intent.putExtra(NumberGameActivity.EXTRA_GAME_MODE,gameMode);
-                log.info("Kullanıcı giriş yaptı : " +player.toString());
+                intent.putExtra(SetupNumberGameActivity.EXTRA_PLAYER, player);
+                intent.putExtra(SetupNumberGameActivity.EXTRA_GAME_MODE, gameMode);
+                log.info("userLogin", "Kullanıcı giriş yaptı : " + player.toString());
                 startActivity(intent);
             }
         });

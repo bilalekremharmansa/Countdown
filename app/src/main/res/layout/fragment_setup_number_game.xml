@@ -1,0 +1,45 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/layout_padding"
+    tools:context="bilalekremharmansa.yeninesilarge.com.countdown.activities.SetupNumberGameFragment">
+
+    <TextView
+        android:id="@+id/txtGameRules"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="300dp"
+        android:text="OYUN KURALLARI" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/how_many_large_num"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+
+        android:layout_alignParentStart="true"
+        android:layout_below="@id/txtGameRules"
+
+        android:id="@+id/txtHowManyLargeInfo" />
+
+    <bilalekremharmansa.yeninesilarge.com.countdown.CustomNumberPicker
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/numPickLargeNumbers"
+        max="4"
+        min="0"
+        android:layout_alignBaseline="@+id/txtHowManyLargeInfo"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true" />
+
+    <Button
+        android:id="@+id/btnGetCards"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/get_cards"
+        android:layout_below="@+id/txtHowManyLargeInfo"
+
+        />
+
+</RelativeLayout>
