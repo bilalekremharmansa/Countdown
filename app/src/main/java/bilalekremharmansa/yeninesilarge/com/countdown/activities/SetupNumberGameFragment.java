@@ -54,13 +54,21 @@ public class SetupNumberGameFragment extends Fragment {
                              Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_setup_number_game, container, false);
 
-        Button btnGetCards = (Button) view.findViewById(R.id.btnGetCards);
-        btnGetCards.setOnClickListener(new View.OnClickListener() {
-            NumberPicker numPickLargeNumber = (NumberPicker) view.findViewById(R.id.numPickLargeNumbers);
-            int numberOfLarge = numPickLargeNumber.getValue();
+        final NumberPicker numPickLargeNumber = (NumberPicker) view.findViewById(R.id.numPickLargeNumbers);
+        final Button btnGetCards = (Button) view.findViewById(R.id.btnGetCards);
 
+        numPickLargeNumber.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                btnGetCards.setText(newVal + getResources().getString(R.string.please));
+            }
+        });
+
+
+        btnGetCards.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                int numberOfLarge = ((NumberPicker) view.findViewById(R.id.numPickLargeNumbers)).getValue();
                 listener.getCards(numberOfLarge);
             }
         });

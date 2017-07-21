@@ -25,6 +25,10 @@ public class NumberGame extends CountdownGame {
 
     private NumberGameUtil gameUtil = new NumberGameUtil();
 
+    public NumberGame(List<Integer> numbersList) {
+        this.numbersList = numbersList;
+        this.target = new Random().nextInt(900) + 100;
+    }
 
     public NumberGame() {
         //this.target = new Random().nextInt(900) + 100;
@@ -57,7 +61,7 @@ public class NumberGame extends CountdownGame {
         int result = NumberGameUtil.evaluateExpression(numbersList, firstIndex, secondIndex, op);
 
         if (result != -1) {
-            gameUtil.saveMemento(numbersList);
+            gameUtil.saveMemento(numbersList, numbersState);
             numbersList.add(result);
             gameUtil.updateNumbersState(this.numbersState, firstIndex, secondIndex, false);
         } else {
@@ -72,7 +76,7 @@ public class NumberGame extends CountdownGame {
         return numbersList;
     }
 
-    public NumberGameUtil getGameUtil() {
-        return gameUtil;
+    public int getTarget() {
+        return target;
     }
 }

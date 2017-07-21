@@ -2,9 +2,11 @@ package bilalekremharmansa.yeninesilarge.com.countdown.game;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.Stack;
 
 /**
  * Created by bilalekremharmansa on 19.7.2017.
@@ -16,10 +18,10 @@ public class NumberGameUtil {
         ADD, SUB, DIV, MUL
     }
 
-    private List<MementoNumbersList> mementoNumbersLists;
+    private Stack<MementoNumbersList> mementoNumbersListStack;
 
     public NumberGameUtil() {
-        this.mementoNumbersLists = new ArrayList<>();
+        this.mementoNumbersListStack = new Stack<>();
     }
 
     public int[] dealCards(int numberOfLarge) {
@@ -31,11 +33,16 @@ public class NumberGameUtil {
             deal[i] = randomGenerator.nextInt(10) + 1;
         }
 
-        int[] largeNumbers = {25, 50, 75, 100};
+        //javada9
+        //List<Integer> largeNumbersList = List.of(25, 50, 75,100);
+
+        List<Integer> largeNumbersList = Arrays.asList(25, 50, 75, 100);
+        Collections.shuffle(largeNumbersList);
 
         //largeNumbers
-        for (int i = deal.length - numberOfLarge; i < deal.length; i++) {
-            deal[i] = largeNumbers[i];
+        int j = 0;//incremented j is in for loop's scope
+        for (int i = deal.length - numberOfLarge; i < deal.length; i++, j++) {
+            deal[i] = largeNumbersList.get(j);
         }
 
         return deal;
@@ -59,18 +66,16 @@ public class NumberGameUtil {
     }
 
     public void saveMemento(MementoNumbersList memento) {
-        mementoNumbersLists.add(memento);
+        mementoNumbersListStack.push(memento);
     }
 
-    public void saveMemento(List<Integer> numbersList) {
-        mementoNumbersLists.add(new MementoNumbersList(numbersList));
+    public void saveMemento(List<Integer> numbersList, boolean[] numbersState) {
+        mementoNumbersListStack.add(new MementoNumbersList(numbersList, numbersState));
     }
 
-    public MementoNumbersList restoreMemento(int index) {
-        if (mementoNumbersLists.size() < 0) return null;
-        else if (index == -1) index = mementoNumbersLists.size() - 1;
-
-        return mementoNumbersLists.get(index);
+    public MementoNumbersList restoreMemento() {
+        if (mementoNumbersListStack.size() < 0) return null;
+        return mementoNumbersListStack.pop();
     }
 
     public boolean[] updateNumbersState(boolean[] numbersState, int firstIndex, int secondIndex, boolean isActive) {
