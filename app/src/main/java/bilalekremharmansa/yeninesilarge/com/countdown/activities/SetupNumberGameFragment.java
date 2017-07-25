@@ -55,6 +55,7 @@ public class SetupNumberGameFragment extends Fragment {
         final View view = inflater.inflate(R.layout.fragment_setup_number_game, container, false);
 
         final NumberPicker numPickLargeNumber = (NumberPicker) view.findViewById(R.id.numPickLargeNumbers);
+        numPickLargeNumber.setValue(4);
         final Button btnGetCards = (Button) view.findViewById(R.id.btnGetCards);
 
         numPickLargeNumber.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {

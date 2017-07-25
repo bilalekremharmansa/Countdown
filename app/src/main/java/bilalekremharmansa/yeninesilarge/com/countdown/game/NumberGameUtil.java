@@ -1,8 +1,6 @@
 package bilalekremharmansa.yeninesilarge.com.countdown.game;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -14,14 +12,10 @@ import java.util.Stack;
 
 public class NumberGameUtil {
 
-    public enum Operator {
-        ADD, SUB, DIV, MUL
-    }
-
-    private Stack<MementoNumbersList> mementoNumbersListStack;
+    private Stack<MementoNumberGame> mementoStack;
 
     public NumberGameUtil() {
-        this.mementoNumbersListStack = new Stack<>();
+        this.mementoStack = new Stack<>();
     }
 
     public int[] dealCards(int numberOfLarge) {
@@ -65,17 +59,14 @@ public class NumberGameUtil {
 
     }
 
-    public void saveMemento(MementoNumbersList memento) {
-        mementoNumbersListStack.push(memento);
+    public void saveMemento(List<Integer> numbersList, byte[] numbersState, List<NumberGameExpression> expressionList) {
+        mementoStack.add(new MementoNumberGame(numbersList, numbersState, expressionList));
+
     }
 
-    public void saveMemento(List<Integer> numbersList, boolean[] numbersState) {
-        mementoNumbersListStack.add(new MementoNumbersList(numbersList, numbersState));
-    }
-
-    public MementoNumbersList restoreMemento() {
-        if (mementoNumbersListStack.size() < 0) return null;
-        return mementoNumbersListStack.pop();
+    public MementoNumberGame restoreMemento() {
+        if (mementoStack.size() < 0) return null;
+        return mementoStack.pop();
     }
 
     public boolean[] updateNumbersState(boolean[] numbersState, int firstIndex, int secondIndex, boolean isActive) {
@@ -84,62 +75,6 @@ public class NumberGameUtil {
         return numbersState;
     }
 
-    public static int evaluateExpression(List<Integer> numbersList, int firstIndex, int secondIndex, Operator op) {
-        int result;
-        switch (op) {
-            case ADD:
-                result = add(numbersList, firstIndex, secondIndex);
-                break;
-            case SUB:
-                result = subtract(numbersList, firstIndex, secondIndex);
-                break;
-            case MUL:
-                result = multiply(numbersList, firstIndex, secondIndex);
-                break;
-            case DIV:
-                result = divide(numbersList, firstIndex, secondIndex);
-                break;
-            default:
-                result = -1;
-                break;
-        }
-        return result;
-    }
 
-    private static int add(List<Integer> numbersList, int firstIndex, int secondIndex) {
-        int firstNumber = numbersList.get(firstIndex);
-        int secondNumber = numbersList.get(secondIndex);
-        return firstNumber + secondNumber;
-    }
-
-    private static int subtract(List<Integer> numbersList, int firstIndex, int secondIndex) {
-        int firstNumber = numbersList.get(firstIndex);
-        int secondNumber = numbersList.get(secondIndex);
-
-        //If result is negative integer, this expression is not valid so return -1.
-        if (firstNumber < secondNumber) return -1;
-
-        return firstNumber - secondNumber;
-    }
-
-    private static int divide(List<Integer> numbersList, int firstIndex, int secondIndex) {
-        int firstNumber = numbersList.get(firstIndex);
-        int secondNumber = numbersList.get(secondIndex);
-
-        if (secondNumber == 0) return -1;
-
-        //We need to specify that we expect our result as double, so we need to cast first or second number to double
-        double result = (double) firstNumber / secondNumber;
-
-        //If result is an integer(we check it with result %1 ==0), return that result. If it's not return -1.
-        return (result % 1 == 0) ? (int) result : -1;
-    }
-
-    private static int multiply(List<Integer> numbersList, int firstIndex, int secondIndex) {
-        int firstNumber = numbersList.get(firstIndex);
-        int secondNumber = numbersList.get(secondIndex);
-
-        return firstNumber * secondNumber;
-    }
 
 }

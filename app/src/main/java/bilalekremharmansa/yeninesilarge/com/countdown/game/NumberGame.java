@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.Stack;
@@ -19,8 +20,9 @@ public class NumberGame extends CountdownGame {
 
     public final static int NUMBER_OF_NUMBERS = 6;
 
-    private List<Integer> numbersList;
-    private boolean[] numbersState;
+    private static List<Integer> numbersList;
+    private byte[] numbersState;
+    private static List<NumberGameExpression> expressionList;
     private final int target;
 
     private NumberGameUtil gameUtil = new NumberGameUtil();
@@ -28,12 +30,13 @@ public class NumberGame extends CountdownGame {
     public NumberGame(List<Integer> numbersList) {
         this.numbersList = numbersList;
         this.target = new Random().nextInt(900) + 100;
+        this.expressionList = new ArrayList<>();
     }
 
     public NumberGame() {
         //this.target = new Random().nextInt(900) + 100;
         numbersList = new ArrayList<>(11); //List might has maximum 11 value.
-        numbersState = new boolean[11];
+
 
         numbersList.add(75);
         numbersList.add(50);
@@ -56,20 +59,62 @@ public class NumberGame extends CountdownGame {
         return (away == 0) ? 10 : (away < 6) ? 7 : (away < 11) ? 5 : 0;
     }
 
-    public List<Integer> evaluateExpression(List<Integer> numbersList, int firstIndex, int secondIndex, NumberGameUtil.Operator op) {
-
-        int result = NumberGameUtil.evaluateExpression(numbersList, firstIndex, secondIndex, op);
-
-        if (result != -1) {
-            gameUtil.saveMemento(numbersList, numbersState);
-            numbersList.add(result);
-            gameUtil.updateNumbersState(this.numbersState, firstIndex, secondIndex, false);
-        } else {
-            log.error("result is not valid", String.format("number one %d number two %d, operator:" + op),
-                    numbersList.get(firstIndex), numbersList.get(secondIndex));
+    public static int evaluateExpression(NumberGameExpression expression) {
+        int result;
+        switch (expression.getOperator()) {
+            case '+':
+                result = add(numbersList, expression.getFirstNumberIndex(), expression.getSecondNumberIndex());
+                break;
+            case '-':
+                result = subtract(numbersList, expression.getFirstNumberIndex(), expression.getSecondNumberIndex());
+                break;
+            case 'x':
+                result = multiply(numbersList, expression.getFirstNumberIndex(), expression.getSecondNumberIndex());
+                break;
+            case '/':
+                result = divide(numbersList, expression.getFirstNumberIndex(), expression.getSecondNumberIndex());
+                break;
+            default:
+                result = -1;
+                break;
         }
+        return result;
+    }
 
-        return numbersList;
+    private static int add(List<Integer> numbersList, int firstIndex, int secondIndex) {
+        int firstNumber = numbersList.get(firstIndex);
+        int secondNumber = numbersList.get(secondIndex);
+        return firstNumber + secondNumber;
+    }
+
+    private static int subtract(List<Integer> numbersList, int firstIndex, int secondIndex) {
+        int firstNumber = numbersList.get(firstIndex);
+        int secondNumber = numbersList.get(secondIndex);
+
+        //If result is negative integer, this expression is not valid so return -1.
+        if (firstNumber < secondNumber) return -1;
+
+        return firstNumber - secondNumber;
+    }
+
+    private static int divide(List<Integer> numbersList, int firstIndex, int secondIndex) {
+        int firstNumber = numbersList.get(firstIndex);
+        int secondNumber = numbersList.get(secondIndex);
+
+        if (secondNumber == 0) return -1;
+
+        //We need to specify that we expect our result as double, so we need to cast first or second number to double
+        double result = (double) firstNumber / secondNumber;
+
+        //If result is an integer(we check it with result %1 ==0), return that result. If it's not return -1.
+        return (result % 1 == 0) ? (int) result : -1;
+    }
+
+    private static int multiply(List<Integer> numbersList, int firstIndex, int secondIndex) {
+        int firstNumber = numbersList.get(firstIndex);
+        int secondNumber = numbersList.get(secondIndex);
+
+        return firstNumber * secondNumber;
     }
 
     public List<Integer> getNumbersList() {
@@ -78,5 +123,22 @@ public class NumberGame extends CountdownGame {
 
     public int getTarget() {
         return target;
+    }
+
+    public NumberGameUtil getGameUtil() {
+        return gameUtil;
+    }
+
+    public byte[] getNumbersState() {
+        if (numbersState == null) {
+            numbersState = new byte[11];
+            Arrays.fill(numbersState, (byte) 0);
+        }
+
+        return numbersState;
+    }
+
+    public List<NumberGameExpression> getExpressionList() {
+        return expressionList;
     }
 }
