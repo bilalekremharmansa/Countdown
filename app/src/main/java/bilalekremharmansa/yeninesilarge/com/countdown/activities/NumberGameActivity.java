@@ -2,7 +2,6 @@ package bilalekremharmansa.yeninesilarge.com.countdown.activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -12,15 +11,14 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import bilalekremharmansa.yeninesilarge.com.countdown.CustomViewGroupExpression;
+import bilalekremharmansa.yeninesilarge.com.countdown.CustomViewExpression;
 import bilalekremharmansa.yeninesilarge.com.countdown.NumberGameButton;
 import bilalekremharmansa.yeninesilarge.com.countdown.Player;
 import bilalekremharmansa.yeninesilarge.com.countdown.R;
 import bilalekremharmansa.yeninesilarge.com.countdown.game.NumberGame;
 import bilalekremharmansa.yeninesilarge.com.countdown.game.NumberGameExpression;
-import bilalekremharmansa.yeninesilarge.com.countdown.game.NumberGameUtil;
 
-public class NumberGameActivity extends AppCompatActivity implements CustomViewGroupExpression.ButtonStateChangedListener {
+public class NumberGameActivity extends AppCompatActivity implements CustomViewExpression.ButtonStateChangedListener {
     public static final String EXTRA_NUMBERS_LIST = "numbersList";
 
     private Player player;
@@ -35,8 +33,9 @@ public class NumberGameActivity extends AppCompatActivity implements CustomViewG
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_number_game);
 
-        numberGame = new NumberGame(getIntent().getIntegerArrayListExtra(EXTRA_NUMBERS_LIST));
-        buttonIDs = new ArrayList<>(numberGame.getNumbersList().size());
+        List<Integer> numbersList = getIntent().getIntegerArrayListExtra(EXTRA_NUMBERS_LIST);
+        numberGame = new NumberGame(numbersList);
+        buttonIDs = new ArrayList<>(numbersList.size());
 
         TextView txtTargetNumber = (TextView) findViewById(R.id.txtTargetNumber);
         txtTargetNumber.setText(String.valueOf(numberGame.getTarget()));
@@ -44,6 +43,8 @@ public class NumberGameActivity extends AppCompatActivity implements CustomViewG
         initiliazeLinearLayoutNumbers(R.id.linearLayoutNumbers, numberGame.getNumbersList(), numberGame.getNumbersState());
 
         linearLayoutExpressions = (LinearLayout) findViewById(R.id.linearLayoutExpressions);
+
+        numberGame.saveMemento();
 
 
     }
@@ -103,28 +104,13 @@ public class NumberGameActivity extends AppCompatActivity implements CustomViewG
         public void onClick(View v) {
             NumberGameButton b = (NumberGameButton) v;
             List<NumberGameExpression> expressionList = numberGame.getExpressionList();
-            NumberGameExpression expression;
+            NumberGameExpression expression = null;
             if (expressionList.isEmpty()) {
-                expression = new NumberGameExpression(b.getIdOfNumbersList());
-                expressionList.add(expression);
-
-                CustomViewGroupExpression expressionLayout = new CustomViewGroupExpression(NumberGameActivity.this, null, expression);
-                expressionLayout.setButtonStateChangedListener(NumberGameActivity.this);
-
-                linearLayoutExpressions.addView(expressionLayout);
-
-
+                createAnExpression(expression, b.getIdOfNumbersList());
             } else {
                 expression = expressionList.get(expressionList.size() - 1);
                 if (expression.isDone()) {
-                    expression = new NumberGameExpression(b.getIdOfNumbersList());
-                    expressionList.add(expression);
-
-                    CustomViewGroupExpression expressionLayout = new CustomViewGroupExpression(NumberGameActivity.this, null, expression);
-                    expressionLayout.setButtonStateChangedListener(NumberGameActivity.this);
-
-
-                    linearLayoutExpressions.addView(expressionLayout);
+                    createAnExpression(expression, b.getIdOfNumbersList());
                 } else {
 
                     // expression.updateExpression(b.getIdOfNumbersList() , Integer.valueOf(b.getText().toString()));
@@ -134,6 +120,19 @@ public class NumberGameActivity extends AppCompatActivity implements CustomViewG
             expression.updateExpression(b.getIdOfNumbersList(), Integer.valueOf(b.getText().toString()));
         }
     };
+
+    public void createAnExpression(NumberGameExpression expression, int ID) {
+        expression = new NumberGameExpression(ID);
+
+        List<NumberGameExpression> expressionList = numberGame.getExpressionList();
+        expressionList.add(expression);
+
+        CustomViewExpression expressionLayout = new CustomViewExpression(NumberGameActivity.this, null, expression);
+        expressionLayout.setButtonStateChangedListener(NumberGameActivity.this);
+
+
+        linearLayoutExpressions.addView(expressionLayout);
+    }
 
     @Override
     public void onValueChange(int oldIndex, int newIndex, NumberGameExpression expression) {
@@ -189,6 +188,10 @@ public class NumberGameActivity extends AppCompatActivity implements CustomViewG
             NumberGameExpression expression = expressionList.get(expressionList.size() - 1);
             expression.updateExpression(b.getText().toString());
         }
+    }
+
+    public void undo() {
+
     }
 
 

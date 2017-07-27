@@ -12,10 +12,9 @@ import java.util.Stack;
 
 public class NumberGameUtil {
 
-    private Stack<MementoNumberGame> mementoStack;
 
     public NumberGameUtil() {
-        this.mementoStack = new Stack<>();
+
     }
 
     public int[] dealCards(int numberOfLarge) {
@@ -59,15 +58,8 @@ public class NumberGameUtil {
 
     }
 
-    public void saveMemento(List<Integer> numbersList, byte[] numbersState, List<NumberGameExpression> expressionList) {
-        mementoStack.add(new MementoNumberGame(numbersList, numbersState, expressionList));
 
-    }
 
-    public MementoNumberGame restoreMemento() {
-        if (mementoStack.size() < 0) return null;
-        return mementoStack.pop();
-    }
 
     public boolean[] updateNumbersState(boolean[] numbersState, int firstIndex, int secondIndex, boolean isActive) {
         numbersState[firstIndex] = isActive;

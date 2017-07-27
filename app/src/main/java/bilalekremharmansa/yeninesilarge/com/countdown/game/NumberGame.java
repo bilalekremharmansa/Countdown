@@ -22,15 +22,18 @@ public class NumberGame extends CountdownGame {
 
     private static List<Integer> numbersList;
     private byte[] numbersState;
-    private static List<NumberGameExpression> expressionList;
+    private static List<NumberGameExpression> expressionList = new ArrayList<>();
     private final int target;
 
+    private Container container;
+
     private NumberGameUtil gameUtil = new NumberGameUtil();
+
+    private Stack<MementoNumberGame> mementoStack;
 
     public NumberGame(List<Integer> numbersList) {
         this.numbersList = numbersList;
         this.target = new Random().nextInt(900) + 100;
-        this.expressionList = new ArrayList<>();
     }
 
     public NumberGame() {
@@ -45,6 +48,20 @@ public class NumberGame extends CountdownGame {
         numbersList.add(8);
         numbersList.add(7);
         target = 812;
+    }
+
+    public void saveMemento() {
+        mementoStack.add(new MementoNumberGame(numbersList, numbersState, expressionList));
+
+    }
+
+    public MementoNumberGame restoreMemento() {
+        if (mementoStack.size() > 1) {
+            return mementoStack.pop();
+        } else if (mementoStack.size() == 1)
+            return mementoStack.peek();
+        else
+            return null;
     }
 
 

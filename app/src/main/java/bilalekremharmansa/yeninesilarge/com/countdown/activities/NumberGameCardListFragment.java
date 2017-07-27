@@ -4,11 +4,6 @@ package bilalekremharmansa.yeninesilarge.com.countdown.activities;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.LightingColorFilter;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -19,9 +14,8 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
-import bilalekremharmansa.yeninesilarge.com.countdown.NumberGameCardButton;
+import bilalekremharmansa.yeninesilarge.com.countdown.NumberGameButton;
 import bilalekremharmansa.yeninesilarge.com.countdown.R;
-import bilalekremharmansa.yeninesilarge.com.countdown.game.NumberGame;
 import bilalekremharmansa.yeninesilarge.com.countdown.game.NumberGameUtil;
 
 /**
@@ -85,13 +79,13 @@ public class NumberGameCardListFragment extends Fragment {
         for (int i = 0; i < buttonIDs.length; i++) {
 
             final int valueOfCard = cardsList[i];
-            NumberGameCardButton btnTemp = ((NumberGameCardButton) view.findViewById(buttonIDs[i]));
+            NumberGameButton btnTemp = ((NumberGameButton) view.findViewById(buttonIDs[i]));
             btnTemp.setValue(valueOfCard);
 
 
             if (valueOfCard >= 25) {
                 btnTemp.setEnabled(false);
-                btnTemp.setPicked(true);//not necessary, better marked as picked.
+                btnTemp.setPicked(true);
                 numbersList.add(valueOfCard);
 
             } else {
@@ -101,7 +95,7 @@ public class NumberGameCardListFragment extends Fragment {
                         /*TODO: kart seçildiği zaman renginin sarı olmasını sağla. Seçilen kartı numbersListe  ekle. Eğer numbersListin size ı oyun başlamak
                         için yeterli ise oyunu başlatmak için activity ekranındaki listenerı tetikle. listener.onClick ile ve bu
                         listenerın metodunun ismini değiştir.*/
-                        NumberGameCardButton btn = (NumberGameCardButton) v;
+                        NumberGameButton btn = (NumberGameButton) v;
 
                         //stackoverflow.com/questions/22648627/how-java-auto-boxing-unboxing-works
                         //bkz:This(Boxing) is beneficial since it allows for caching, and doesn't force the creation of a new object on each boxing operation.

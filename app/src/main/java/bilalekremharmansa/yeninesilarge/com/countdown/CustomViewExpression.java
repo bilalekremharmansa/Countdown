@@ -10,10 +10,6 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
-import java.util.Enumeration;
-
 import bilalekremharmansa.yeninesilarge.com.countdown.game.NumberGame;
 import bilalekremharmansa.yeninesilarge.com.countdown.game.NumberGameExpression;
 
@@ -21,7 +17,7 @@ import bilalekremharmansa.yeninesilarge.com.countdown.game.NumberGameExpression;
  * Created by bilalekremharmansa on 24.7.2017.
  */
 
-public class CustomViewGroupExpression extends LinearLayout implements NumberGameExpression.ValueChangedListener, View.OnClickListener {
+public class CustomViewExpression extends LinearLayout implements NumberGameExpression.ValueChangedListener, View.OnClickListener {
     private LinearLayout linearLayout = null;
     private TextView txtFirstNumber;
     private TextView txtOperator;
@@ -47,12 +43,12 @@ public class CustomViewGroupExpression extends LinearLayout implements NumberGam
         void onResultButtonClickListener(int resultValue);
     }
 
-    public CustomViewGroupExpression(Context context) {
+    public CustomViewExpression(Context context) {
         super(context);
         mContext = context;
     }
 
-    public CustomViewGroupExpression(Context context, @Nullable AttributeSet attrs) {
+    public CustomViewExpression(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
 
@@ -100,7 +96,7 @@ public class CustomViewGroupExpression extends LinearLayout implements NumberGam
         }
     };
 
-    public CustomViewGroupExpression(Context context, @Nullable AttributeSet attrs, NumberGameExpression expression) {
+    public CustomViewExpression(Context context, @Nullable AttributeSet attrs, NumberGameExpression expression) {
         this(context, attrs);
         expression.setValueChangedListener(this);
     }

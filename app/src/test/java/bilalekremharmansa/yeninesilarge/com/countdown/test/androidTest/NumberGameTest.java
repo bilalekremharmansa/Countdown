@@ -37,8 +37,8 @@ public class NumberGameTest {
         assertEquals(7, numberGame.score(5, 6));
         assertEquals(7, numberGame.score(5, 4));
 
-        numberGame.evaluateExpression(numberGame.getNumbersList(), 1, 2, NumberGameUtil.Operator.ADD);
-        numberGame.evaluateExpression(numberGame.getNumbersList(), 3, 4, NumberGameUtil.Operator.ADD);
+        //numberGame.evaluateExpression(numberGame.getNumbersList(), 1, 2, NumberGameUtil.Operator.ADD);
+        // numberGame.evaluateExpression(numberGame.getNumbersList(), 3, 4, NumberGameUtil.Operator.ADD);
 
     }
 
