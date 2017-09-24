@@ -1,4 +1,4 @@
-package bilalekremharmansa.yeninesilarge.com.countdown.activities;
+package com.bilalekremharmansa.countdown.activities;
 
 import android.content.Intent;
 import android.support.v4.app.FragmentManager;
@@ -9,8 +9,8 @@ import android.os.Bundle;
 import java.util.ArrayList;
 import java.util.List;
 
-import bilalekremharmansa.yeninesilarge.com.countdown.R;
-import bilalekremharmansa.yeninesilarge.com.countdown.game.NumberGame;
+import com.bilalekremharmansa.countdown.R;
+import com.bilalekremharmansa.countdown.game.NumberGame;
 
 public class NumberGameCardListActivity extends AppCompatActivity implements NumberGameCardListFragment.NumbersListListener {
 

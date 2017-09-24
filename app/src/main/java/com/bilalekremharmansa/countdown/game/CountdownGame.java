@@ -1,4 +1,4 @@
-package bilalekremharmansa.yeninesilarge.com.countdown.game;
+package com.bilalekremharmansa.countdown.game;
 
 /**
  * Created by bilalekremharmansa on 17.7.2017.
@@ -11,8 +11,8 @@ public abstract class CountdownGame {
 
     //private target
 
-    private enum GameMode{
-        WORD,NUMBER
+    private enum GameMode {
+        WORD, NUMBER
     }
 
     public int getScore() {

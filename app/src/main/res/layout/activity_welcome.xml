@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/layout_padding"
-    tools:context="bilalekremharmansa.yeninesilarge.com.countdown.activities.WelcomeActivity">
+    tools:context="com.bilalekremharmansa.countdown.activities.WelcomeActivity">
 
     <TextView
         android:id="@+id/txtWelcome"
@@ -60,6 +60,14 @@
         android:textOff="@string/number_game"
 
         />
+
+    <Button
+        android:id="@+id/btnController"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txtGameMode"
+        android:layout_centerHorizontal="true"
+        android:text="@string/next" />
 
 
     <Button

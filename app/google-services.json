@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "293776167163",
+    "firebase_url": "https://countdown-3b443.firebaseio.com",
+    "project_id": "countdown-3b443",
+    "storage_bucket": "countdown-3b443.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:293776167163:android:c321476e0ad9bb8e",
+        "android_client_info": {
+          "package_name": "com.bilalekremharmansa.countdown"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "293776167163-9mo4la4rnhvolc6gdct9rob1pkdrhnup.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bilalekremharmansa.countdown",
+            "certificate_hash": "4402bd7c0e239de9ba8d0ecb837931a8cc1e64f6"
+          }
+        },
+        {
+          "client_id": "293776167163-3nn5bislmbclsc28ibocvdcrgup5crff.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAS2g6IRi0TOVAjbfRZZ_C5pA3c0_Bny1A"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "293776167163-3nn5bislmbclsc28ibocvdcrgup5crff.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

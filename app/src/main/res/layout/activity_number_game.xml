@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/layout_padding"
-    tools:context="bilalekremharmansa.yeninesilarge.com.countdown.activities.NumberGameActivity">
+    tools:context="com.bilalekremharmansa.countdown.activities.NumberGameActivity">
+
 
     <TextView
         android:id="@+id/txtTargetNumber"
@@ -16,12 +17,13 @@
         android:textSize="@dimen/text_title" />
 
     <Button
-        android:id="@+id/btnUndo"
+        android:id="@+id/btnGameOver"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/txtTargetNumber"
         android:layout_alignParentEnd="true"
-        android:text="@string/undo" />
+        android:onClick="onClickGameOver"
+        android:text="@string/game_over" />
 
 
     <LinearLayout

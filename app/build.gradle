@@ -4,7 +4,7 @@ android {
     compileSdkVersion 24
     buildToolsVersion "25.0.2"
     defaultConfig {
-        applicationId "bilalekremharmansa.yeninesilarge.com.countdown"
+        applicationId "com.bilalekremharmansa.countdown"
         minSdkVersion 19
         targetSdkVersion 24
         versionCode 1
@@ -17,6 +17,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
 }
 
 buildscript {
@@ -36,13 +37,23 @@ dependencies {
         exclude group: 'com.google.android', module: 'android'
     }
 
+    compile('com.squareup.retrofit2:retrofit:2.1.0') {
+        // exclude Retrofit’s OkHttp dependency module and define your own module import
+        exclude module: 'okhttp'
+    }
 
     compile 'com.android.support:appcompat-v7:24.2.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.1'
     compile 'org.slf4j:slf4j-api:1.7.21'
     compile 'com.github.tony19:logback-android-core:1.1.1-6'
-
     compile 'com.android.support:support-v4:24.2.1'
+    compile 'com.google.code.gson:gson:2.6.2'
+    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.4.1'
+    compile 'com.squareup.okhttp3:okhttp:3.4.1'
+    compile 'com.google.firebase:firebase-database:10.0.1'
     testCompile 'junit:junit:4.12'
-
 }
+
+
+apply plugin: 'com.google.gms.google-services'

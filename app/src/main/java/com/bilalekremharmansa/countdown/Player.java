@@ -1,4 +1,4 @@
-package bilalekremharmansa.yeninesilarge.com.countdown;
+package com.bilalekremharmansa.countdown;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -7,7 +7,7 @@ import android.os.Parcelable;
  * Created by bilalekremharmansa on 17.7.2017.
  */
 
-public class Player implements Parcelable{
+public class Player implements Parcelable {
 
     private String name;
 

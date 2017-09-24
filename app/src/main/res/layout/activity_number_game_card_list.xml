@@ -5,10 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="bilalekremharmansa.yeninesilarge.com.countdown.activities.NumberGameCardListActivity">
+    tools:context="com.bilalekremharmansa.countdown.activities.NumberGameCardListActivity">
 
     <fragment
-        class="bilalekremharmansa.yeninesilarge.com.countdown.activities.NumberGameCardListFragment"
+        class="com.bilalekremharmansa.countdown.activities.NumberGameCardListFragment"
         android:id="@+id/frag_card_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

@@ -4,8 +4,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import bilalekremharmansa.yeninesilarge.com.countdown.game.NumberGame;
-import bilalekremharmansa.yeninesilarge.com.countdown.game.NumberGameUtil;
 
 import static org.junit.Assert.*;
 
@@ -14,7 +12,6 @@ import static org.junit.Assert.*;
  */
 public class NumberGameTest {
 
-    NumberGame numberGame = new NumberGame();
 
     @Before
     public void setUp() throws Exception {
@@ -33,12 +30,7 @@ public class NumberGameTest {
 
     @Test
     public void scorePoint() {
-        assertEquals(10, numberGame.score(5, 5));
-        assertEquals(7, numberGame.score(5, 6));
-        assertEquals(7, numberGame.score(5, 4));
 
-        //numberGame.evaluateExpression(numberGame.getNumbersList(), 1, 2, NumberGameUtil.Operator.ADD);
-        // numberGame.evaluateExpression(numberGame.getNumbersList(), 3, 4, NumberGameUtil.Operator.ADD);
 
     }
 

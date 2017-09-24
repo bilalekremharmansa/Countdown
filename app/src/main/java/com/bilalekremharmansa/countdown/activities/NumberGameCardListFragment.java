@@ -1,4 +1,4 @@
-package bilalekremharmansa.yeninesilarge.com.countdown.activities;
+package com.bilalekremharmansa.countdown.activities;
 
 
 import android.annotation.TargetApi;
@@ -14,9 +14,9 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
-import bilalekremharmansa.yeninesilarge.com.countdown.NumberGameButton;
-import bilalekremharmansa.yeninesilarge.com.countdown.R;
-import bilalekremharmansa.yeninesilarge.com.countdown.game.NumberGameUtil;
+import com.bilalekremharmansa.countdown.customcomponents.NumberGameButton;
+import com.bilalekremharmansa.countdown.R;
+import com.bilalekremharmansa.countdown.game.NumberGameUtil;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -70,7 +70,6 @@ public class NumberGameCardListFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        //TODO numbers list in size ını bir constant olarak belirleyip 5-6 farklı yerde kullanabilirsin.
         numbersList = new ArrayList<>();
         View view = getView();
         NumberGameUtil numberGame = new NumberGameUtil();
@@ -92,9 +91,6 @@ public class NumberGameCardListFragment extends Fragment {
                 btnTemp.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        /*TODO: kart seçildiği zaman renginin sarı olmasını sağla. Seçilen kartı numbersListe  ekle. Eğer numbersListin size ı oyun başlamak
-                        için yeterli ise oyunu başlatmak için activity ekranındaki listenerı tetikle. listener.onClick ile ve bu
-                        listenerın metodunun ismini değiştir.*/
                         NumberGameButton btn = (NumberGameButton) v;
 
                         //stackoverflow.com/questions/22648627/how-java-auto-boxing-unboxing-works

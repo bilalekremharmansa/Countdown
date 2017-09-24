@@ -1,5 +1,4 @@
-package bilalekremharmansa.yeninesilarge.com.countdown.game;
-
+package com.bilalekremharmansa.countdown.game;
 
 
 /**
@@ -7,7 +6,6 @@ package bilalekremharmansa.yeninesilarge.com.countdown.game;
  */
 
 public class WordGame extends CountdownGame {
-
 
 
 }

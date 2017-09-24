@@ -1,4 +1,4 @@
-package bilalekremharmansa.yeninesilarge.com.countdown.activities;
+package com.bilalekremharmansa.countdown.activities;
 
 
 import android.annotation.TargetApi;
@@ -14,7 +14,7 @@ import android.widget.Button;
 import android.widget.NumberPicker;
 
 
-import bilalekremharmansa.yeninesilarge.com.countdown.R;
+import com.bilalekremharmansa.countdown.R;
 
 /**
  * A simple {@link Fragment} subclass.

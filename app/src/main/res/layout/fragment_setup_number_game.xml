@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/layout_padding"
-    tools:context="bilalekremharmansa.yeninesilarge.com.countdown.activities.SetupNumberGameFragment">
+    tools:context="com.bilalekremharmansa.countdown.activities.SetupNumberGameFragment">
 
     <TextView
         android:id="@+id/txtGameRules"
@@ -23,7 +23,7 @@
 
         android:id="@+id/txtHowManyLargeInfo" />
 
-    <bilalekremharmansa.yeninesilarge.com.countdown.CustomNumberPicker
+    <com.bilalekremharmansa.countdown.customcomponents.CustomNumberPicker
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/numPickLargeNumbers"

@@ -6,10 +6,10 @@
     android:layout_height="match_parent"
     android:padding="@dimen/layout_padding"
     android:orientation="horizontal"
-    tools:context="bilalekremharmansa.yeninesilarge.com.countdown.activities.SetupNumberGameActivity">
+    tools:context="com.bilalekremharmansa.countdown.activities.SetupNumberGameActivity">
 
     <fragment
-        class="bilalekremharmansa.yeninesilarge.com.countdown.activities.SetupNumberGameFragment"
+        class="com.bilalekremharmansa.countdown.activities.SetupNumberGameFragment"
         android:id="@+id/frag_setup"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

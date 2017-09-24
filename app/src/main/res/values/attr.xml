@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="Expression">
+        <attr name="first_number" format="string" />
+        <attr name="operator" format="string" />
+        <attr name="second_number" format="string" />
+        <attr name="result" format="string" />
+        <attr name="android:ems" />
+
+    </declare-styleable>
+</resources>
