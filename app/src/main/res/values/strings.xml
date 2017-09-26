@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Countdown</string>
+    <string name="activity_label_number_game">Number Game Oyunu</string>
+
     <string name="welcome">Bir Kelime Bir İşlem\nOyununa Hoşgeldiniz</string>
     <string name="hint_username">Lütfen, kullanıcı adınızı girin.</string>
     <string name="next">İleri</string>

@@ -1,7 +1,6 @@
 package com.bilalekremharmansa.countdown.game;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -12,21 +11,21 @@ public final class MementoNumberGame {
 
     private final MementoMode mementoMode;
     private final List<Wrapper> wrapperList;
-    private final List<NumberGameExpression> expressionList;
+    private final List<NGExpression> expressionList;
 
     public enum MementoMode {
         CONSTANT, EXP_FIRST, EXP_OPERATOR, EXP_SECOND, RESULT_BUTTON;
     }
 
-    public MementoNumberGame(MementoMode mementoMode, List<Wrapper> wrapperList, List<NumberGameExpression> expressionList) {
+    public MementoNumberGame(MementoMode mementoMode, List<Wrapper> wrapperList, List<NGExpression> expressionList) {
         this.mementoMode = mementoMode;
         this.wrapperList = new ArrayList<>(wrapperList.size());
         for (Wrapper wrapper : wrapperList) {
             this.wrapperList.add(new Wrapper(wrapper));
         }
         this.expressionList = new ArrayList<>(expressionList.size());
-        for (NumberGameExpression e : expressionList) {
-            this.expressionList.add(new NumberGameExpression(e));
+        for (NGExpression e : expressionList) {
+            this.expressionList.add(new NGExpression(e));
         }
     }
 
@@ -35,7 +34,7 @@ public final class MementoNumberGame {
         return wrapperList;
     }
 
-    public List<NumberGameExpression> getExpressionList() {
+    public List<NGExpression> getExpressionList() {
         return expressionList;
     }
 

@@ -19,7 +19,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.NumberGameActivity" />
+        <activity
+            android:name=".activities.NumberGameActivity"
+            android:label="@string/activity_label_number_game"
+            android:parentActivityName=".activities.SetupNumberGameActivity" />
         <activity android:name=".activities.SetupNumberGameActivity" />
         <activity android:name=".activities.NumberGameCardListActivity" />
         <activity android:name=".activities.ControllerActivity"></activity>

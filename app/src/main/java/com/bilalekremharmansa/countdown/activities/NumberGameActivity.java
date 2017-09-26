@@ -1,31 +1,31 @@
 package com.bilalekremharmansa.countdown.activities;
 
-import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewManager;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.List;
-
-import com.bilalekremharmansa.countdown.customcomponents.CustomViewExpression;
-import com.bilalekremharmansa.countdown.customcomponents.NumberGameButton;
 import com.bilalekremharmansa.countdown.Player;
 import com.bilalekremharmansa.countdown.R;
+import com.bilalekremharmansa.countdown.customcomponents.NGExpressionAdapter;
+import com.bilalekremharmansa.countdown.customcomponents.NumberGameButton;
 import com.bilalekremharmansa.countdown.game.MementoCaretaker;
 import com.bilalekremharmansa.countdown.game.MementoNumberGame;
+import com.bilalekremharmansa.countdown.game.NGExpression;
 import com.bilalekremharmansa.countdown.game.NumberGame;
-import com.bilalekremharmansa.countdown.game.NumberGameExpression;
 import com.bilalekremharmansa.countdown.game.Wrapper;
 import com.bilalekremharmansa.countdown.webapi.APINumberGame;
 
-public class NumberGameActivity extends AppCompatActivity implements CustomViewExpression.ButtonStateChangedListener, NumberGame.GameOverListener, Wrapper.WrapperStateListener {
+import java.util.List;
+
+public class NumberGameActivity extends AppCompatActivity implements NumberGame.GameOverListener, Wrapper.WrapperStateListener {
     public static final String EXTRA_NUMBERS_LIST = "numbersList";
     public static final String EXTRA_NUMBERS_GAME = "numbersGame";
 
@@ -33,16 +33,20 @@ public class NumberGameActivity extends AppCompatActivity implements CustomViewE
 
     private NumberGame numberGame;
 
-    private LinearLayout linearLayoutExpressions;
+    private LinearLayout linearLayoutNumbers;
+    private RecyclerView recyclerView;
+    private NGExpressionAdapter expressionAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_number_game);
 
+        getSupportActionBar().setHomeButtonEnabled(true);
+
         if (savedInstanceState != null) {
             numberGame = savedInstanceState.getParcelable(EXTRA_NUMBERS_GAME);
-            initiliazeExpressions(R.id.linearLayoutExpressions, numberGame.getExpressionList());
+            expressionAdapter.notifyDataSetChanged();
         } else if (getIntent().hasExtra(EXTRA_NUMBERS_LIST)) {
             List<Integer> numbersList = getIntent().getIntegerArrayListExtra(EXTRA_NUMBERS_LIST);
             numberGame = new NumberGame(numbersList);
@@ -53,12 +57,44 @@ public class NumberGameActivity extends AppCompatActivity implements CustomViewE
             Toast.makeText(getApplicationContext(), "Online Mod", Toast.LENGTH_LONG).show();
         }
 
+        linearLayoutNumbers = (LinearLayout) findViewById(R.id.linearLayoutNumbers);
+
+        expressionAdapter = new NGExpressionAdapter(numberGame.getExpressionList());
+
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_expression);
+        recyclerView.setAdapter(expressionAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        expressionAdapter.setResultButtonListener(new NGExpressionAdapter.ResultButtonListener() {
+            @Override
+            public void onResultButtonClickListener(final int position) {
+                MementoCaretaker.getInstance().saveMemento(MementoNumberGame.MementoMode.RESULT_BUTTON, numberGame);
+
+                NGExpression expression = numberGame.getExpressionList().get(position);
+                expression.setVisibility(NGExpression.Visibility.FIRST_OPERATOR_SECOND_RESULT_PASSIVE);
+
+                Wrapper resultWrapper = expression.getResultWrapper();
+
+                LinearLayout linearLayoutNumbers = (LinearLayout) findViewById(R.id.linearLayoutNumbers);
+
+                NumberGameButton btn = new NumberGameButton(NumberGameActivity.this);
+                btn.setWrapper(resultWrapper);
+                btn.setCalculatedButton(true);
+                btn.setOnClickListener(numbersListener);
+
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
+                linearLayoutNumbers.addView(btn, params);
+
+                expressionAdapter.notifyItemChanged(position);
+            }
+        });
+
+
         TextView txtTargetNumber = (TextView) findViewById(R.id.txtTargetNumber);
         txtTargetNumber.setText(String.valueOf(numberGame.getTarget()));
 
         initiliazeLinearLayoutNumbers(R.id.linearLayoutNumbers, numberGame.getWrapperList());
 
-        linearLayoutExpressions = (LinearLayout) findViewById(R.id.linearLayoutExpressions);
 
         numberGame.setGameOverListener(this);
         Wrapper.setListener(this);
@@ -69,10 +105,10 @@ public class NumberGameActivity extends AppCompatActivity implements CustomViewE
         }
     }
 
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        linearLayoutExpressions.removeAllViews();
     }
 
     @Override
@@ -88,27 +124,15 @@ public class NumberGameActivity extends AppCompatActivity implements CustomViewE
         onClickUndo();
     }
 
-    private void initiliazeExpressions(int layoutID, List<NumberGameExpression> expressionList) {
-        final LinearLayout linearLayoutExpressions = (LinearLayout) findViewById(layoutID);
-        for (NumberGameExpression expression : expressionList) {
-            linearLayoutExpressions.addView(expression.getCustomViewExpression());
-        }
-    }
-
 
     private void initiliazeLinearLayoutNumbers(int layoutID, List<Wrapper> wrapperList) {
         //numbersListe göre linearLayoutNumbers ı oluşturuyor.
-        final LinearLayout linearLayoutNumbers = (LinearLayout) findViewById(layoutID);
-
         linearLayoutNumbers.removeAllViewsInLayout();
 
         for (Wrapper wrapper : wrapperList) {
             NumberGameButton btn = new NumberGameButton(this);
-            btn.setId(wrapper.getIdOfButton());
-            btn.setText(String.valueOf(wrapper.getValue()));
+            btn.setWrapper(wrapper);
             btn.setOnClickListener(numbersListener);
-
-            setStatusOfNumberButton(btn, wrapper.getState());
 
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
             linearLayoutNumbers.addView(btn, params);
@@ -147,149 +171,77 @@ public class NumberGameActivity extends AppCompatActivity implements CustomViewE
         @Override
         public void onClick(View v) {
             NumberGameButton b = (NumberGameButton) v;
-            List<NumberGameExpression> expressionList = numberGame.getExpressionList();
-            NumberGameExpression expression = null;
-            //expressionList boş ise veya son expression bitmiş ise yeni bi tane oluşturuluyor,
-            // halihazırda var ise update ediliyor.
 
-            if (expressionList.isEmpty() || (expression = expressionList.get(expressionList.size() - 1)).isDone()) {
-                expression = createAnExpression(b.getId());
-            } else if (expression.getOperator() != NumberGameExpression.DEFAULT_CHAR_VALUE) {
+            boolean isCreated = numberGame.createExpresssion(expressionAdapter, b.getWrapper());
 
+            if (!isCreated) {
+                numberGame.updateExpression(expressionAdapter, b.getWrapper());
             }
-
-            expression.updateUI(numberGame, b.getId(), Integer.valueOf(b.getText().toString()));
         }
     };
 
-    public NumberGameExpression createAnExpression(int firstWrapperButtonID) {
-        //yeni bir expression oluşturuluyor
-        List<NumberGameExpression> expressionList = numberGame.getExpressionList();
-        if (!expressionList.isEmpty()) {
-            //mementoya kaydediyoruz.
-            MementoCaretaker.getInstance().saveMemento(MementoNumberGame.MementoMode.EXP_FIRST, numberGame);
-        }
 
-        NumberGameExpression expression = new NumberGameExpression(this, firstWrapperButtonID);
-        expressionList.add(expression);
-
-        linearLayoutExpressions.addView(expression.getCustomViewExpression());
-        return expression;
-    }
-
-    @Override
-    public void onResultOfExpressionClickedListener(int customViewExpressionID, int resultValue) {
-        //expressiondaki button tıklanınca üstteki liste çıkması.
+    public void onResultButtonClickListener(Wrapper resultWrapper) {
         MementoCaretaker.getInstance().saveMemento(MementoNumberGame.MementoMode.RESULT_BUTTON, numberGame);
 
         LinearLayout linearLayoutNumbers = (LinearLayout) findViewById(R.id.linearLayoutNumbers);
 
-        List<Wrapper> wrapperList = numberGame.getWrapperList();
-
-        Wrapper resultWrapper = new Wrapper(resultValue);
-
         NumberGameButton btn = new NumberGameButton(this);
-        btn.setId(resultWrapper.getIdOfButton());
+        btn.setWrapper(resultWrapper);
         btn.setCalculatedButton(true);
-        btn.setText(String.valueOf(resultValue));
         btn.setOnClickListener(numbersListener);
-
-        wrapperList.add(resultWrapper);
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
         linearLayoutNumbers.addView(btn, params);
-
-
-        for (NumberGameExpression expression : numberGame.getExpressionList()) {
-            if (expression.getIdOfExpressionLayout() == customViewExpressionID) {
-                expression.setResultWrapperButtonID(resultWrapper.getIdOfButton());
-            }
-        }
-
     }
 
     public void undoMemento(MementoNumberGame memento) {
-        List<NumberGameExpression> expressionList = numberGame.getExpressionList();
 
-        NumberGameExpression expression;
-        CustomViewExpression customViewExpression;
+        NGExpression expression;
 
         switch (memento.getMementoMode()) {
             case CONSTANT:
             case EXP_FIRST:
-                expression = expressionList.get(expressionList.size() - 1);
-                int layoutID = expression.getIdOfExpressionLayout();
-                customViewExpression = (CustomViewExpression) findViewById(layoutID);
+                expression = numberGame.getExpressionList().get(numberGame.getExpressionList().size() - 1);
 
-                for (Wrapper wrapper : numberGame.getWrapperList()) {
-                    if (wrapper.getIdOfButton() == expression.getFirstWrapperButtonID()) {
-                        View btn = findViewById(wrapper.getIdOfButton());
-                        setStatusOfNumberButton(btn, 1);
-                        break;
-                    }
-                }
-
-                numberGame.restoreNumberGame(memento);
-                ((ViewManager) customViewExpression.getParent()).removeView(customViewExpression);
+                expression.getFirstWrapper().setState(1);
+                // numberGame.deleteExpression(recyclerView,expressionAdapter);
+                numberGame.restoreNumberGame(expressionAdapter, memento);
                 break;
 
             case EXP_OPERATOR:
-                expression = expressionList.get(expressionList.size() - 1);
-                expression.updateUI(numberGame, String.valueOf(NumberGameExpression.DEFAULT_CHAR_VALUE));
-                // setStatusOfNumberButton(customViewExpression.getTxtOperator(),(byte)3);
 
-                numberGame.restoreNumberGame(memento);
+                numberGame.restoreNumberGame(expressionAdapter, memento);
+                //  numberGame.updateExpression(expressionAdapter,NGExpression.DEFAULT_CHAR_VALUE);
+                // numberGame.updateExpression(expressionAdapter,NGExpression.Visibility.FIRST);
                 break;
 
             case EXP_SECOND:
-                expression = expressionList.get(expressionList.size() - 1);
-                int layID = expression.getIdOfExpressionLayout();
-                customViewExpression = (CustomViewExpression) findViewById(layID);
 
-                int secondWrapperButtonID = expression.getSecondWrapperButtonID();
-                expression.setSecondWrapperButtonID(-1);
-                customViewExpression.getTxtSecondNumber().setText("");
-                customViewExpression.getBtnResult().setText("");
+                expression = numberGame.getExpressionList().get(numberGame.getExpressionList().size() - 1);
 
-                setStatusOfNumberButton(customViewExpression.getTxtSecondNumber(), 3);
-                setStatusOfNumberButton(customViewExpression.getTxtEqual(), 3);
-                setStatusOfNumberButton(customViewExpression.getBtnResult(), 3);
+                expression.getSecondWrapper().setState(1);
 
-                for (Wrapper wrapper : numberGame.getWrapperList()) {
 
-                    if (wrapper.getIdOfButton() == secondWrapperButtonID) {
-                        View btn = findViewById(wrapper.getIdOfButton());
-                        setStatusOfNumberButton(btn, 1);
+                numberGame.restoreNumberGame(expressionAdapter, memento);
+                break;
+            case RESULT_BUTTON:
+
+                final int linearLayoutNumbersChildCount = linearLayoutNumbers.getChildCount();
+                for (int i = 0; i < linearLayoutNumbersChildCount; i++) {
+                    NumberGameButton btn = (NumberGameButton) linearLayoutNumbers.getChildAt(i);
+
+                    if (btn.isCalculatedButton()) {
+                        linearLayoutNumbers.removeViewAt(i);
                         break;
                     }
                 }
 
-                numberGame.restoreNumberGame(memento);
-                break;
-            case RESULT_BUTTON:
-
-                List<Wrapper> wrapperList = numberGame.getWrapperList();
-
-                int resultButtonID = -1;
-
-                Wrapper wrapper = wrapperList.get(wrapperList.size() - 1);
-                NumberGameButton btn = (NumberGameButton) findViewById(wrapper.getIdOfButton());
-                if (btn.isCalculatedButton()) {
-                    ((ViewManager) btn.getParent()).removeView(btn);
-                    resultButtonID = wrapper.getIdOfButton();
-                }
-
-
-                for (NumberGameExpression exp : numberGame.getExpressionList()) {
-                    if (resultButtonID == exp.getResultWrapperButtonID()) {
-                        setStatusOfNumberButton(exp.getCustomViewExpression().getBtnResult(), 1);
-                    }
-                }
-
-                numberGame.restoreNumberGame(memento);
+                numberGame.restoreNumberGame(expressionAdapter, memento);
                 break;
 
         }
+
 
     }
 
@@ -315,11 +267,7 @@ public class NumberGameActivity extends AppCompatActivity implements CustomViewE
 
     public void onClickOperator(View v) {
         Button b = (Button) v;
-        List<NumberGameExpression> expressionList = numberGame.getExpressionList();
-        if (expressionList != null && !expressionList.isEmpty()) {
-            NumberGameExpression expression = expressionList.get(expressionList.size() - 1);
-            expression.updateUI(numberGame, b.getText().toString());
-        }
+        numberGame.updateExpression(expressionAdapter, b.getText().toString().charAt(0));
     }
 
     public void onClickUndo() {

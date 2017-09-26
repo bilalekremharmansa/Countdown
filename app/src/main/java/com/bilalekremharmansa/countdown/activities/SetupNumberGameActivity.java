@@ -1,17 +1,15 @@
 package com.bilalekremharmansa.countdown.activities;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.bilalekremharmansa.countdown.R;
 import com.bilalekremharmansa.countdown.webapi.APIController;
 import com.bilalekremharmansa.countdown.webapi.APINumberGame;
+
+import java.io.IOException;
 
 public class SetupNumberGameActivity extends AppCompatActivity implements SetupNumberGameFragment.SetupNumberGameListener, APIController.ControllerListener {
 
@@ -39,6 +37,8 @@ public class SetupNumberGameActivity extends AppCompatActivity implements SetupN
             transaction.commit();
         } else {
             this.numberOfLargeNumbers = numberOfLarge;
+            offline();
+            /*
             if (isOnline()) {
                 APIController controller = new APIController();
                 controller.setListener(this);
@@ -46,7 +46,7 @@ public class SetupNumberGameActivity extends AppCompatActivity implements SetupN
                 controller.get(numberOfLarge, 1);
             } else {
                 offline();
-            }
+            }*/
         }
     }
 

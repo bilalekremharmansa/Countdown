@@ -3,7 +3,9 @@ package com.bilalekremharmansa.countdown.game;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.widget.Button;
+
+import com.bilalekremharmansa.countdown.customcomponents.NGExpressionAdapter;
+import com.bilalekremharmansa.countdown.webapi.APINumberGame;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,17 +13,16 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.bilalekremharmansa.countdown.webapi.APINumberGame;
-
 /**
  * Created by bilalekremharmansa on 17.7.2017.
  */
 
-public class NumberGame extends CountdownGame implements Parcelable, NumberGameExpression.GameOverListener {
+public class NumberGame extends CountdownGame implements Parcelable {
 
     private Logger log = LoggerFactory.getLogger(NumberGame.class);
+    private static final String LOG_TAG = "NumberGameLOGTag";
 
-    private List<NumberGameExpression> expressionList;
+    private List<NGExpression> expressionList;
 
     public static int target;
 
@@ -42,7 +43,6 @@ public class NumberGame extends CountdownGame implements Parcelable, NumberGameE
 
         this.expressionList = new ArrayList<>();
 
-        NumberGameExpression.setGameOverListener(this);
     }
 
     public NumberGame(APINumberGame apiGame) {
@@ -52,13 +52,13 @@ public class NumberGame extends CountdownGame implements Parcelable, NumberGameE
 
         this.expressionList = new ArrayList<>(5);
 
-        NumberGameExpression.setGameOverListener(this);
     }
 
 
-    public void restoreNumberGame(MementoNumberGame memento) {
+    public void restoreNumberGame(NGExpressionAdapter expressionAdapter, MementoNumberGame memento) {
         this.wrapperList = new ArrayList<>(memento.getWrapperList());
-        expressionList = new ArrayList<>(memento.getExpressionList());
+        this.setExpressionList(expressionAdapter, memento.getExpressionList());
+
     }
 
     public void initWrapper(List<Integer> numbersList) {
@@ -76,12 +76,10 @@ public class NumberGame extends CountdownGame implements Parcelable, NumberGameE
         return null;
     }
 
-    @Override
     public void onResultFound() {
         gameOverListener.onGameOver(score(target, target));
     }
 
-    @Override
     public void onGameOver() {
         int higherScore = 0;
         int score;
@@ -90,13 +88,6 @@ public class NumberGame extends CountdownGame implements Parcelable, NumberGameE
             score = score(wrapper.getValue(), target);
             higherScore = score > higherScore ? score : higherScore;
             // }
-        }
-
-        for (NumberGameExpression expression : expressionList) {
-            if (expression.isDone() && expression.getCustomViewExpression().getBtnResult().isEnabled()) {
-                score = score(Integer.valueOf(expression.getCustomViewExpression().getBtnResult().getText().toString()), target);
-                higherScore = score > higherScore ? score : higherScore;
-            }
         }
 
         gameOverListener.onGameOver(higherScore);
@@ -121,14 +112,117 @@ public class NumberGame extends CountdownGame implements Parcelable, NumberGameE
         return target;
     }
 
-    public List<NumberGameExpression> getExpressionList() {
-        return expressionList;
-    }
-
     public List<Wrapper> getWrapperList() {
         return wrapperList;
     }
 
+    public boolean createExpresssion(NGExpressionAdapter expressionAdapter, Wrapper firstWrapper) {
+        NGExpression expression;
+        if (!expressionList.isEmpty()) {
+            expression = expressionList.get(expressionList.size() - 1);
+
+            if (!expression.isDone()) {
+                return false;
+            }
+
+            MementoCaretaker.getInstance().saveMemento(MementoNumberGame.MementoMode.EXP_FIRST, this);
+        }
+
+        expression = new NGExpression(firstWrapper);
+        firstWrapper.setState(2);
+
+        expression.setVisibility(NGExpression.Visibility.FIRST);
+
+        expressionList.add(expression);
+
+        log.info(LOG_TAG, "Expression oluşturuldu");
+        expressionAdapter.notifyItemInserted(expressionList.size() - 1);
+        return true;
+    }
+
+    public void updateExpression(NGExpressionAdapter expressionAdapter, Wrapper newWrapper) {
+        NGExpression expression = null;
+        if (!expressionList.isEmpty()) {
+            expression = expressionList.get(expressionList.size() - 1);
+
+            if (expression.isDone())
+                return;
+        }
+
+        if (expression.getOperator() == NGExpression.DEFAULT_CHAR_VALUE) {
+            Wrapper oldWrapper = expression.getFirstWrapper();
+            oldWrapper.setState(1);
+
+            expression.setFirstWrapper(newWrapper);
+            newWrapper.setState(2);
+        } else {
+            int result = NumberGameUtil.evaluateExpression(expression.getFirstWrapper().getValue(),
+                    newWrapper.getValue(), expression.getOperator());
+
+            if (result == -1)
+                return;
+
+            MementoCaretaker.getInstance().saveMemento(MementoNumberGame.MementoMode.EXP_SECOND, this);
+
+            Wrapper resultWrapper = new Wrapper(result);
+            wrapperList.add(resultWrapper);
+
+            expression.setSecondWrapper(newWrapper);
+            expression.setResultWrapper(resultWrapper);
+
+            expression.setVisibility(NGExpression.Visibility.FIRST_OPERATOR_SECOND_RESULT_ACTIVE);
+
+            expression.getFirstWrapper().setState(4);
+            expression.getSecondWrapper().setState(4);
+
+            expression.setDone(true);
+
+            if (result == NumberGame.target) {
+                onResultFound();
+            } else if (getWrapperList().size() == 10) {
+                onGameOver();
+            }
+
+        }
+
+        log.info(LOG_TAG, "Expression güncellendi");
+        expressionAdapter.notifyItemChanged(expressionList.size() - 1);
+    }
+
+    public void updateExpression(NGExpressionAdapter expressionAdapter, char operator) {
+        NGExpression expression = null;
+        if (!expressionList.isEmpty()) {
+            expression = expressionList.get(expressionList.size() - 1);
+
+            if (expression.isDone())
+                return;
+        } else {
+            return;
+        }
+
+        if (expression.getSecondWrapper() == null) {
+            if (expression.getOperator() == NGExpression.DEFAULT_CHAR_VALUE)
+                MementoCaretaker.getInstance().saveMemento(MementoNumberGame.MementoMode.EXP_OPERATOR, this);
+
+            expression.setOperator(operator);
+
+            expression.setVisibility(NGExpression.Visibility.FIRST_OPERATOR);
+
+            log.info(LOG_TAG, "Expression güncellendi");
+            expressionAdapter.notifyItemChanged(expressionList.size() - 1);
+        }
+
+    }
+
+    public List<NGExpression> getExpressionList() {
+        return expressionList;
+    }
+
+    public void setExpressionList(NGExpressionAdapter expressionAdapter, List<NGExpression> expressionList) {
+        this.expressionList = expressionList;
+        expressionAdapter.setNgExpressionList(expressionList);
+        expressionAdapter.notifyDataSetChanged();
+    }
 
     @Override
     public int describeContents() {
@@ -137,18 +231,21 @@ public class NumberGame extends CountdownGame implements Parcelable, NumberGameE
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+
         dest.writeList(this.expressionList);
         dest.writeList(this.wrapperList);
         dest.writeList(this.solutionList);
+
     }
 
     protected NumberGame(Parcel in) {
         this.expressionList = new ArrayList<>();
-        in.readList(this.expressionList, NumberGameExpression.class.getClassLoader());
+        in.readList(this.expressionList, NGExpression.class.getClassLoader());
         this.wrapperList = new ArrayList<>();
         in.readList(this.wrapperList, Wrapper.class.getClassLoader());
         this.solutionList = new ArrayList<>();
         in.readList(this.solutionList, List.class.getClassLoader());
+
     }
 
     public static final Creator<NumberGame> CREATOR = new Creator<NumberGame>() {
@@ -162,6 +259,4 @@ public class NumberGame extends CountdownGame implements Parcelable, NumberGameE
             return new NumberGame[size];
         }
     };
-
-
 }

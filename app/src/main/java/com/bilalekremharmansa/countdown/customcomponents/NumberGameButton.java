@@ -6,6 +6,8 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 
+import com.bilalekremharmansa.countdown.game.Wrapper;
+
 
 /**
  * Created by bilalekremharmansa on 19.7.2017.
@@ -13,7 +15,7 @@ import android.util.AttributeSet;
 
 public class NumberGameButton extends android.support.v7.widget.AppCompatButton {
 
-    private int value;
+    private Wrapper wrapper;
     private boolean isPicked;
 
 
@@ -49,8 +51,14 @@ public class NumberGameButton extends android.support.v7.widget.AppCompatButton 
         }
     }
 
-    public int getValue() {
-        return value;
+    public Wrapper getWrapper() {
+        return wrapper;
+    }
+
+    public void setWrapper(Wrapper wrapper) {
+        this.wrapper = wrapper;
+        this.setId(wrapper.getIdOfButton());
+        this.setText(String.valueOf(wrapper.getValue()));
     }
 
     public boolean isPicked() {
@@ -68,12 +76,6 @@ public class NumberGameButton extends android.support.v7.widget.AppCompatButton 
 
 
     }
-
-    public NumberGameButton setValue(int value) {
-        this.value = value;
-        return this;
-    }
-
 
     public boolean isCalculatedButton() {
         return isCalculatedButton;
