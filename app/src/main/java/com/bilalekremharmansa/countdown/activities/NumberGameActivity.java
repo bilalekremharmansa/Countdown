@@ -44,16 +44,17 @@ public class NumberGameActivity extends AppCompatActivity implements NumberGame.
 
         getSupportActionBar().setHomeButtonEnabled(true);
 
+
         if (savedInstanceState != null) {
             numberGame = savedInstanceState.getParcelable(EXTRA_NUMBERS_GAME);
-            expressionAdapter.notifyDataSetChanged();
+            // expressionAdapter.notifyDataSetChanged();
         } else if (getIntent().hasExtra(EXTRA_NUMBERS_LIST)) {
             List<Integer> numbersList = getIntent().getIntegerArrayListExtra(EXTRA_NUMBERS_LIST);
             numberGame = new NumberGame(numbersList);
             Toast.makeText(getApplicationContext(), "Offline Mod", Toast.LENGTH_LONG).show();
         } else if (getIntent().hasExtra(EXTRA_NUMBERS_GAME)) {
-            APINumberGame numbersGame = getIntent().getParcelableExtra(EXTRA_NUMBERS_GAME);
-            numberGame = new NumberGame(numbersGame);
+            NumberGame numbersGame = getIntent().getParcelableExtra(EXTRA_NUMBERS_GAME);
+            numberGame = numbersGame;
             Toast.makeText(getApplicationContext(), "Online Mod", Toast.LENGTH_LONG).show();
         }
 

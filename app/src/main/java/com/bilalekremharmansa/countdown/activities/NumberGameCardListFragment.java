@@ -11,12 +11,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bilalekremharmansa.countdown.R;
+import com.bilalekremharmansa.countdown.customcomponents.NumberGameButton;
+import com.bilalekremharmansa.countdown.game.NumberGameUtil;
+import com.bilalekremharmansa.countdown.game.Wrapper;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.bilalekremharmansa.countdown.customcomponents.NumberGameButton;
-import com.bilalekremharmansa.countdown.R;
-import com.bilalekremharmansa.countdown.game.NumberGameUtil;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -79,7 +80,7 @@ public class NumberGameCardListFragment extends Fragment {
 
             final int valueOfCard = cardsList[i];
             NumberGameButton btnTemp = ((NumberGameButton) view.findViewById(buttonIDs[i]));
-            btnTemp.setValue(valueOfCard);
+            btnTemp.setWrapper(new Wrapper(valueOfCard));
 
 
             if (valueOfCard >= 25) {

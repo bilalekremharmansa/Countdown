@@ -28,6 +28,7 @@ public class NumberGame extends CountdownGame implements Parcelable {
 
     private List<Wrapper> wrapperList;
 
+
     private List<List<String>> solutionList;
 
     private GameOverListener gameOverListener;
@@ -45,10 +46,14 @@ public class NumberGame extends CountdownGame implements Parcelable {
 
     }
 
-    public NumberGame(APINumberGame apiGame) {
-        initWrapper(apiGame.getNumbersList());
-        this.solutionList = apiGame.getSolutionList();
-        NumberGame.target = apiGame.getTarget();
+    public NumberGame() {
+
+    }
+
+    public NumberGame(List<Integer> numbersList, int target) {
+        initWrapper(numbersList);
+
+        NumberGame.target = target;
 
         this.expressionList = new ArrayList<>(5);
 
@@ -108,9 +113,7 @@ public class NumberGame extends CountdownGame implements Parcelable {
         return (away == 0) ? 10 : (away < 6) ? 7 : (away < 11) ? 5 : 0;
     }
 
-    public int getTarget() {
-        return target;
-    }
+
 
     public List<Wrapper> getWrapperList() {
         return wrapperList;
@@ -224,6 +227,7 @@ public class NumberGame extends CountdownGame implements Parcelable {
         expressionAdapter.notifyDataSetChanged();
     }
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -238,14 +242,23 @@ public class NumberGame extends CountdownGame implements Parcelable {
 
     }
 
+    public static void setTarget(int target) {
+        NumberGame.target = target;
+    }
+
+    public int getTarget() {
+        return target;
+    }
+
     protected NumberGame(Parcel in) {
+
         this.expressionList = new ArrayList<>();
         in.readList(this.expressionList, NGExpression.class.getClassLoader());
         this.wrapperList = new ArrayList<>();
         in.readList(this.wrapperList, Wrapper.class.getClassLoader());
         this.solutionList = new ArrayList<>();
         in.readList(this.solutionList, List.class.getClassLoader());
-
+        this.gameOverListener = in.readParcelable(GameOverListener.class.getClassLoader());
     }
 
     public static final Creator<NumberGame> CREATOR = new Creator<NumberGame>() {

@@ -1,16 +1,21 @@
 package com.bilalekremharmansa.countdown.activities;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.bilalekremharmansa.countdown.Player;
 import com.bilalekremharmansa.countdown.R;
+import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class WelcomeActivity extends AppCompatActivity {
@@ -31,23 +36,30 @@ public class WelcomeActivity extends AppCompatActivity {
         findViewById(R.id.btnNext).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                gameMode = findViewById(R.id.togBtnGameMode).isSelected();
 
                 EditText editTxtUsername = (EditText) findViewById(R.id.editTxtUsername);
                 player.setName(editTxtUsername.getText().toString());
 
                 Intent intent = new Intent(WelcomeActivity.this, SetupNumberGameActivity.class);
                 intent.putExtra(SetupNumberGameActivity.EXTRA_PLAYER, player);
-                intent.putExtra(SetupNumberGameActivity.EXTRA_GAME_MODE, gameMode);
                 log.info("userLogin", "Kullanıcı giriş yaptı : " + player.toString());
                 startActivity(intent);
             }
         });
 
-        findViewById(R.id.btnController).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.btn_sign_out).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(WelcomeActivity.this, ControllerActivity.class));
+                AuthUI.getInstance()
+                        .signOut(WelcomeActivity.this)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            public void onComplete(@NonNull Task<Void> task) {
+                                // user is now signed out
+                                startActivity(new Intent(WelcomeActivity.this, AuthenticationActivity.class));
+                                finish();
+                            }
+                        });
+
             }
         });
 

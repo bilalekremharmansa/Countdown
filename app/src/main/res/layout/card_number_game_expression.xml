@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="50dp"
     android:layout_margin="5dp"
-    card_view:cardCornerRadius="4dp">
+    card_view:cardCornerRadius="4dp"
+    card_view:cardBackgroundColor="@color/cardview_light_background">
 
     <LinearLayout
         android:id="@+id/layout_expression"

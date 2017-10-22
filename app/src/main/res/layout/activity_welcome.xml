@@ -48,26 +48,13 @@
 
         />
 
-    <ToggleButton
-        android:id="@+id/togBtnGameMode"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        android:layout_below="@id/txtGameMode"
-        android:layout_centerHorizontal="true"
-
-        android:textOn="@string/word_game"
-        android:textOff="@string/number_game"
-
-        />
-
     <Button
-        android:id="@+id/btnController"
+        android:id="@+id/btn_sign_out"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/txtGameMode"
         android:layout_centerHorizontal="true"
-        android:text="@string/next" />
+        android:text="Çıkış yap" />
 
 
     <Button

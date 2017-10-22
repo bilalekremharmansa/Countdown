@@ -1,17 +1,12 @@
 package com.bilalekremharmansa.countdown.activities;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
-
-import java.util.List;
-
 
 import com.bilalekremharmansa.countdown.R;
 import com.bilalekremharmansa.countdown.webapi.APIController;
-import com.bilalekremharmansa.countdown.webapi.APINumberGame;
 
 public class ControllerActivity extends AppCompatActivity implements View.OnClickListener {
 
