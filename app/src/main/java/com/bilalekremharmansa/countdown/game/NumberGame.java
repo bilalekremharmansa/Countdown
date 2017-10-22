@@ -4,6 +4,7 @@ package com.bilalekremharmansa.countdown.game;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.bilalekremharmansa.countdown.activities.SetupNumberGameActivity;
 import com.bilalekremharmansa.countdown.customcomponents.NGExpressionAdapter;
 import com.bilalekremharmansa.countdown.webapi.APINumberGame;
 
@@ -28,7 +29,6 @@ public class NumberGame extends CountdownGame implements Parcelable {
 
     private List<Wrapper> wrapperList;
 
-
     private List<List<String>> solutionList;
 
     private GameOverListener gameOverListener;
@@ -46,15 +46,10 @@ public class NumberGame extends CountdownGame implements Parcelable {
 
     }
 
-    public NumberGame() {
 
-    }
-
-    public NumberGame(List<Integer> numbersList, int target) {
-        initWrapper(numbersList);
-
-        NumberGame.target = target;
-
+    public NumberGame(SetupNumberGameActivity.FirebaseNumberGame firebaseNumberGame) {
+        initWrapper(firebaseNumberGame.getNumbers());
+        NumberGame.target = firebaseNumberGame.getTarget();
         this.expressionList = new ArrayList<>(5);
 
     }

@@ -6,22 +6,41 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
 import com.bilalekremharmansa.countdown.R;
+import com.bilalekremharmansa.countdown.game.NumberGame;
 import com.bilalekremharmansa.countdown.webapi.APIController;
 import com.bilalekremharmansa.countdown.webapi.APINumberGame;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class SetupNumberGameActivity extends AppCompatActivity implements SetupNumberGameFragment.SetupNumberGameListener, APIController.ControllerListener {
+public class SetupNumberGameActivity extends AppCompatActivity implements SetupNumberGameFragment.SetupNumberGameListener {
 
     public static final String EXTRA_PLAYER = "player";
-    public static final String EXTRA_GAME_MODE = "gameMode";
+
 
     private int numberOfLargeNumbers = 0;
+
+    FirebaseDatabase database;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setup_number_game);
+
+        database = FirebaseDatabase.getInstance();
     }
 
 
@@ -37,27 +56,55 @@ public class SetupNumberGameActivity extends AppCompatActivity implements SetupN
             transaction.commit();
         } else {
             this.numberOfLargeNumbers = numberOfLarge;
-            offline();
-            /*
+
             if (isOnline()) {
-                APIController controller = new APIController();
-                controller.setListener(this);
-                //TODO lastGameID here
-                controller.get(numberOfLarge, 1);
+                final DatabaseReference ref = database.getReference();
+                ref.child("number-games").child(String.valueOf(numberOfLargeNumbers)).orderByKey().limitToLast(1)
+                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot d : dataSnapshot.getChildren()){
+                            final FirebaseNumberGame g = d.getValue(FirebaseNumberGame.class);
+
+                            ref.child("solution-list").child(String.valueOf(numberOfLargeNumbers))
+                                    .child(d.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            for (DataSnapshot solutions : dataSnapshot.getChildren()){
+                                                List<String> solution = (List<String>) solutions.getValue();
+                                                g.solutionList.add(solution);
+                                            }
+
+                                            online(new NumberGame(g));
+
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+                                            offline();
+                                        }
+                                    });
+
+
+                        }
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        offline();
+                    }
+                });
             } else {
                 offline();
-            }*/
+            }
         }
     }
 
-    @Override
-    public void online(APINumberGame numberGame) {
+    public void online(NumberGame numberGame) {
         Intent intent = new Intent(this, NumberGameActivity.class);
         intent.putExtra(NumberGameActivity.EXTRA_NUMBERS_GAME, numberGame);
         startActivity(intent);
     }
 
-    @Override
     public void offline() {
         Intent intent = new Intent(this, NumberGameCardListActivity.class);
         intent.putExtra(NumberGameCardListActivity.EXTRA_LARGE_NUMBERS, this.numberOfLargeNumbers);
@@ -78,5 +125,56 @@ public class SetupNumberGameActivity extends AppCompatActivity implements SetupN
         }
 
         return false;
+    }
+
+    public static class FirebaseNumberGame{
+        private int ID;
+
+        private List<Integer> numbers;
+
+        private int target;
+
+        private List<List<String>> solutionList = new ArrayList<>();
+
+        public FirebaseNumberGame() {
+
+        }
+
+        public FirebaseNumberGame(List<Integer> numbers, int target) {
+            this.numbers = numbers;
+            this.target = target;
+        }
+
+        public int getID() {
+            return ID;
+        }
+
+        public void setID(int ID) {
+            this.ID = ID;
+        }
+
+        public List<Integer> getNumbers() {
+            return numbers;
+        }
+
+        public void setNumbers(List<Integer> numbers) {
+            this.numbers = numbers;
+        }
+
+        public int getTarget() {
+            return target;
+        }
+
+        public void setTarget(int target) {
+            this.target = target;
+        }
+
+        public List<List<String>>getSolutionList() {
+            return solutionList;
+        }
+
+        public void setSolutionList(List<List<String>> solutionList) {
+            this.solutionList = solutionList;
+        }
     }
 }

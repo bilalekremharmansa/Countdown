@@ -53,6 +53,7 @@ public class NumberGameActivity extends AppCompatActivity implements NumberGame.
             numberGame = new NumberGame(numbersList);
             Toast.makeText(getApplicationContext(), "Offline Mod", Toast.LENGTH_LONG).show();
         } else if (getIntent().hasExtra(EXTRA_NUMBERS_GAME)) {
+            //online mod
             NumberGame numbersGame = getIntent().getParcelableExtra(EXTRA_NUMBERS_GAME);
             numberGame = numbersGame;
             Toast.makeText(getApplicationContext(), "Online Mod", Toast.LENGTH_LONG).show();
