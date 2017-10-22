@@ -40,8 +40,8 @@ public class NumberGame extends CountdownGame implements Parcelable {
 
     public NumberGame(List<Integer> numbersList) {
         initWrapper(numbersList);
+        //testing
         this.target = 125;
-
         this.expressionList = new ArrayList<>();
 
     }
@@ -100,11 +100,6 @@ public class NumberGame extends CountdownGame implements Parcelable {
     private int score(int calculated, int target) {
         int away = Math.abs(target - calculated);
 
-        /*if(away == 0) scorePoint = 10;
-        else if( away < 6 ) scorePoint = 7;
-        else if( away < 11 ) scorePoint = 5;*/
-
-        //return score ;
         return (away == 0) ? 10 : (away < 6) ? 7 : (away < 11) ? 5 : 0;
     }
 
@@ -177,12 +172,10 @@ public class NumberGame extends CountdownGame implements Parcelable {
 
             if (result == NumberGame.target) {
                 onResultFound();
-            } else if (getWrapperList().size() == 10) {
+            } else if (getWrapperList().size() >= 11) {
                 onGameOver();
             }
-
         }
-
         log.info(LOG_TAG, "Expression güncellendi");
         expressionAdapter.notifyItemChanged(expressionList.size() - 1);
     }
