@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Countdown.iml" filepath="$PROJECT_DIR$/Countdown.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file:///mnt/DAB432CCB432AB41/AndroidStudioProjects/Countdown/Countdown.iml" filepath="/mnt/DAB432CCB432AB41/AndroidStudioProjects/Countdown/Countdown.iml" />
+      <module fileurl="file:///mnt/DAB432CCB432AB41/AndroidStudioProjects/Countdown/app/app.iml" filepath="/mnt/DAB432CCB432AB41/AndroidStudioProjects/Countdown/app/app.iml" />
     </modules>
   </component>
 </project>

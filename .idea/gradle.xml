@@ -7,8 +7,8 @@
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="modules">
           <set>
-            <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/app" />
+            <option value="/mnt/DAB432CCB432AB41/AndroidStudioProjects/Countdown" />
+            <option value="/mnt/DAB432CCB432AB41/AndroidStudioProjects/Countdown/app" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

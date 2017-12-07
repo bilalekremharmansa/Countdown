@@ -37,6 +37,12 @@ public class NGExpression implements Parcelable {
         this.isDone = expression.isDone();
     }
 
+    @Override
+    public String toString() {
+        return firstWrapper.getValue() + " " + operator + " " + secondWrapper.getValue() + " = "
+                + resultWrapper.getValue();
+    }
+
     public Wrapper getFirstWrapper() {
         return firstWrapper;
     }

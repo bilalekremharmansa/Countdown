@@ -1,9 +1,17 @@
 package com.bilalekremharmansa.countdown.activities;
 
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -16,6 +24,8 @@ import com.bilalekremharmansa.countdown.Player;
 import com.bilalekremharmansa.countdown.R;
 import com.bilalekremharmansa.countdown.customcomponents.NGExpressionAdapter;
 import com.bilalekremharmansa.countdown.customcomponents.NumberGameButton;
+import com.bilalekremharmansa.countdown.db.CountdownDBHelper;
+import com.bilalekremharmansa.countdown.db.NGDatabaseContract;
 import com.bilalekremharmansa.countdown.game.MementoCaretaker;
 import com.bilalekremharmansa.countdown.game.MementoNumberGame;
 import com.bilalekremharmansa.countdown.game.NGExpression;
@@ -95,7 +105,7 @@ public class NumberGameActivity extends AppCompatActivity implements NumberGame.
         TextView txtTargetNumber = (TextView) findViewById(R.id.txtTargetNumber);
         txtTargetNumber.setText(String.valueOf(numberGame.getTarget()));
 
-        initiliazeLinearLayoutNumbers(R.id.linearLayoutNumbers, numberGame.getWrapperList());
+        initiliazeLinearLayoutNumbers(numberGame.getWrapperList());
 
 
         numberGame.setGameOverListener(this);
@@ -127,7 +137,7 @@ public class NumberGameActivity extends AppCompatActivity implements NumberGame.
     }
 
 
-    private void initiliazeLinearLayoutNumbers(int layoutID, List<Wrapper> wrapperList) {
+    private void initiliazeLinearLayoutNumbers(List<Wrapper> wrapperList) {
         //numbersListe göre linearLayoutNumbers ı oluşturuyor.
         linearLayoutNumbers.removeAllViewsInLayout();
 
@@ -154,14 +164,10 @@ public class NumberGameActivity extends AppCompatActivity implements NumberGame.
 
     @Override
     public void onGameOver(int score) {
-        //hesaplamalar yapılcak burada.
-
-        if (score == 0) {
-            Toast.makeText(getApplicationContext(), "Cevab bulunamadı, 0 puan", Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(getApplicationContext(), "Cevabı buldunuz, " + score + " puan", Toast.LENGTH_LONG).show();
-        }
-
+        Intent intent = new Intent(this, NGResultScreen.class);
+        intent.putExtra(NGResultScreen.EXTRA_SCORE, score);
+        new GameTask().execute(numberGame);
+        startActivity(intent);
     }
 
     public void onClickGameOver(View v) {
@@ -288,5 +294,132 @@ public class NumberGameActivity extends AppCompatActivity implements NumberGame.
     public void onExpressionUpdate(int buttonID, int state) {
         View v = findViewById(buttonID);
         setStatusOfNumberButton(v, state);
+    }
+
+
+    private class GameTask extends AsyncTask<NumberGame, Void, Boolean> {
+
+        @Override
+        protected Boolean doInBackground(NumberGame... numberGames) {
+            NumberGame numberGame = numberGames[0];
+
+            int[] numbers = new int[6];
+            int numberOfLargeNumbers = 0;
+            for (int i = 0; i < numbers.length; i++) {
+                Wrapper w = numberGame.getWrapperList().get(i);
+
+                numbers[i] = w.getValue();
+                if (w.getValue() >= 25) numberOfLargeNumbers++;
+            }
+
+            List<NGExpression> expressionList = numberGame.getExpressionList();
+
+            ContentValues valuesGame = new ContentValues();
+            valuesGame.put(NGDatabaseContract.GameEntry.COLUMN_NUMBER_OF_LARGE_NUMS,
+                    numberOfLargeNumbers);
+            valuesGame.put(NGDatabaseContract.GameEntry.COLUMN_NUMBER_ONE, numbers[0]);
+            valuesGame.put(NGDatabaseContract.GameEntry.COLUMN_NUMBER_TWO, numbers[1]);
+            valuesGame.put(NGDatabaseContract.GameEntry.COLUMN_NUMBER_THREE, numbers[2]);
+            valuesGame.put(NGDatabaseContract.GameEntry.COLUMN_NUMBER_FOUR, numbers[3]);
+            valuesGame.put(NGDatabaseContract.GameEntry.COLUMN_NUMBER_FIVE, numbers[4]);
+            valuesGame.put(NGDatabaseContract.GameEntry.COLUMN_NUMBER_SIX, numbers[5]);
+            valuesGame.put(NGDatabaseContract.GameEntry.COLUMN_TARGET, numberGame.getTarget());
+            valuesGame.put(NGDatabaseContract.GameEntry.COLUMN_PLAYED_DATETIME,
+                    System.currentTimeMillis());
+            valuesGame.put(NGDatabaseContract.GameEntry.COLUMN_IS_ACTIVE, 1);
+
+            SQLiteOpenHelper helper = new CountdownDBHelper(getApplicationContext());
+            SQLiteDatabase db = helper.getWritableDatabase();
+
+
+            try {
+                db.beginTransaction();
+
+                db.insert(
+                        NGDatabaseContract.GameEntry.TABLE_NAME,
+                        null,
+                        valuesGame);
+
+                //select seq from sqlite_sequence where name="table_name"
+                Cursor cursor = db.query(
+                        "SQLITE_SEQUENCE",
+                        new String[]{"seq"},
+                        "name = ? ",
+                        new String[]{NGDatabaseContract.GameEntry.TABLE_NAME},
+                        null,
+                        null,
+                        null
+                );
+
+                int gameID = -1;
+                if (cursor.moveToFirst()) {
+                    gameID = cursor.getInt(0);
+
+                }
+
+                String[] columnsSolution = {
+                        NGDatabaseContract.SolutionEntry.COLUMN_STEP_ONE,
+                        NGDatabaseContract.SolutionEntry.COLUMN_STEP_TWO,
+                        NGDatabaseContract.SolutionEntry.COLUMN_STEP_THREE,
+                        NGDatabaseContract.SolutionEntry.COLUMN_STEP_FOUR,
+                        NGDatabaseContract.SolutionEntry.COLUMN_STEP_FIVE,
+                };
+
+                if (gameID != -1) {
+                    ContentValues valuesSolution = new ContentValues();
+                    for (int i = 0; i < expressionList.size(); i++) {
+                        valuesSolution.put(columnsSolution[i], expressionList.get(0).toString());
+                    }
+
+                    db.insert(
+                            NGDatabaseContract.SolutionEntry.TABLE_NAME,
+                            "",
+                            valuesSolution);
+                }
+
+
+                db.setTransactionSuccessful();
+                db.endTransaction();
+
+                cursor.close();
+            } catch (Exception ex) {
+                Log.e("Database accces", "error", ex);
+                return false;
+            }
+
+            db.close();
+            helper.close();
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+
+            if (aBoolean) {
+                Toast.makeText(getApplicationContext(), "Yay, succesfully inserted into database.", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(getApplicationContext(), "Somethhing went wrong while accessing database", Toast.LENGTH_LONG).show();
+            }
+            Log.d("AsyncDatabase", "Result is " + aBoolean);
+        }
+
+        @Override
+        protected void onCancelled(Boolean aBoolean) {
+            //todo
+            super.onCancelled(aBoolean);
+        }
+
+        /* String[] columnsGame={
+                    NGDatabaseContract.GameEntry.COLUMN_NUMBER_OF_LARGE_NUMS,
+                    NGDatabaseContract.GameEntry.COLUMN_NUMBER_ONE,
+                    NGDatabaseContract.GameEntry.COLUMN_NUMBER_TWO,
+                    NGDatabaseContract.GameEntry.COLUMN_NUMBER_THREE,
+                    NGDatabaseContract.GameEntry.COLUMN_NUMBER_FOUR,
+                    NGDatabaseContract.GameEntry.COLUMN_NUMBER_FIVE,
+                    NGDatabaseContract.GameEntry.COLUMN_NUMBER_SIX,
+                    NGDatabaseContract.GameEntry.COLUMN_TARGET,
+                    NGDatabaseContract.GameEntry.COLUMN_PLAYED_DATETIME
+            };*/
     }
 }

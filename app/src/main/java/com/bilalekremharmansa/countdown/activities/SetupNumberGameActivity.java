@@ -57,7 +57,8 @@ public class SetupNumberGameActivity extends AppCompatActivity implements SetupN
         } else {
             this.numberOfLargeNumbers = numberOfLarge;
 
-            if (isOnline()) {
+            //todo isOnline
+            if (isOnline() || true) {
                 final DatabaseReference ref = database.getReference();
                 ref.child("number-games").child(String.valueOf(numberOfLargeNumbers)).orderByKey().limitToLast(1)
                                     .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -74,18 +75,13 @@ public class SetupNumberGameActivity extends AppCompatActivity implements SetupN
                                                 List<String> solution = (List<String>) solutions.getValue();
                                                 g.solutionList.add(solution);
                                             }
-
                                             online(new NumberGame(g));
-
                                         }
-
                                         @Override
                                         public void onCancelled(DatabaseError databaseError) {
                                             offline();
                                         }
                                     });
-
-
                         }
                     }
                     @Override
