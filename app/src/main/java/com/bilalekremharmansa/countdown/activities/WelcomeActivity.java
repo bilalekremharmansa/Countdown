@@ -2,8 +2,12 @@ package com.bilalekremharmansa.countdown.activities;
 
 import android.app.ActivityOptions;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -30,6 +34,8 @@ public class WelcomeActivity extends AppCompatActivity {
     private boolean gameMode = false; // if variable set true, the game is word game. If its false number game
     private Player player;
 
+    private DrawerLayout drawerLayout;
+    private ActionBarDrawerToggle drawerToggle;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +44,32 @@ public class WelcomeActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        getSupportActionBar().setTitle("Oyuna hoşgeldiniz.");
+        ActionBar actionBar = getSupportActionBar();
+
+        actionBar.setTitle("Oyuna hoşgeldiniz.");
+
+
+        drawerLayout = findViewById(R.id.drawer_layout);
+        drawerToggle = new ActionBarDrawerToggle(
+                this,
+                drawerLayout,
+                0,
+                0) {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+            }
+        };
+
+        drawerLayout.addDrawerListener(drawerToggle);
+
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setHomeButtonEnabled(true);
 
         player = new Player();
 
@@ -55,6 +86,19 @@ public class WelcomeActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        drawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        drawerToggle.onConfigurationChanged(newConfig);
+    }
+
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_toolbar, menu);
@@ -64,6 +108,10 @@ public class WelcomeActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (drawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+
         switch (item.getItemId()) {
             case R.id.action_people:
                 Toast.makeText(this, "FAVORITE", Toast.LENGTH_LONG).show();
