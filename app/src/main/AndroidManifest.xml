@@ -11,14 +11,19 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.AuthenticationActivity">
+        <activity
+            android:name=".activities.SplashScreenActivity"
+            android:theme="@style/Countdown.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.WelcomeActivity"></activity>
+        <activity android:name=".activities.AuthenticationActivity">
+
+        </activity>
+        <activity android:name=".activities.WelcomeActivity" />
         <activity
             android:name=".activities.NumberGameActivity"
             android:label="@string/activity_label_number_game"
@@ -26,7 +31,8 @@
         <activity android:name=".activities.SetupNumberGameActivity" />
         <activity android:name=".activities.NumberGameCardListActivity" />
         <activity android:name=".activities.ControllerActivity" />
-        <activity android:name=".activities.NGResultScreen"></activity>
+        <activity android:name=".activities.NGResultScreen" />
+
     </application>
 
 </manifest>
