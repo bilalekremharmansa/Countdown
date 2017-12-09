@@ -1,7 +1,6 @@
 package com.bilalekremharmansa.countdown.activities;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -11,7 +10,11 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -31,7 +34,6 @@ import com.bilalekremharmansa.countdown.game.MementoNumberGame;
 import com.bilalekremharmansa.countdown.game.NGExpression;
 import com.bilalekremharmansa.countdown.game.NumberGame;
 import com.bilalekremharmansa.countdown.game.Wrapper;
-import com.bilalekremharmansa.countdown.webapi.APINumberGame;
 
 import java.util.List;
 
@@ -52,8 +54,10 @@ public class NumberGameActivity extends AppCompatActivity implements NumberGame.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_number_game);
 
-        getSupportActionBar().setHomeButtonEnabled(true);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         if (savedInstanceState != null) {
             numberGame = savedInstanceState.getParcelable(EXTRA_NUMBERS_GAME);
@@ -136,6 +140,28 @@ public class NumberGameActivity extends AppCompatActivity implements NumberGame.
         onClickUndo();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_toolbar, menu);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_people:
+                Toast.makeText(this, "FAVORITE", Toast.LENGTH_LONG).show();
+                break;
+            case R.id.action_settings:
+                Toast.makeText(this, "SETTINGS", Toast.LENGTH_LONG).show();
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
 
     private void initiliazeLinearLayoutNumbers(List<Wrapper> wrapperList) {
         //numbersListe göre linearLayoutNumbers ı oluşturuyor.
@@ -164,8 +190,8 @@ public class NumberGameActivity extends AppCompatActivity implements NumberGame.
 
     @Override
     public void onGameOver(int score) {
-        Intent intent = new Intent(this, NGResultScreen.class);
-        intent.putExtra(NGResultScreen.EXTRA_SCORE, score);
+        Intent intent = new Intent(this, NGResultScreenActivity.class);
+        intent.putExtra(NGResultScreenActivity.EXTRA_SCORE, score);
         new GameTask().execute(numberGame);
         startActivity(intent);
     }

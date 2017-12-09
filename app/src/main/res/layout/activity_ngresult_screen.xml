@@ -5,7 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.bilalekremharmansa.countdown.activities.NGResultScreen">
+    tools:context="com.bilalekremharmansa.countdown.activities.NGResultScreenActivity">
+
+    <include layout="@layout/toolbar" />
 
     <TextView
         android:id="@+id/txt_total_score"

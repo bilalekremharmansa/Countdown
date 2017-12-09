@@ -2,8 +2,14 @@ package com.bilalekremharmansa.countdown.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.bilalekremharmansa.countdown.R;
 import com.bilalekremharmansa.countdown.game.NumberGame;
@@ -40,7 +46,42 @@ public class SetupNumberGameActivity extends AppCompatActivity implements SetupN
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setup_number_game);
 
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        Fragment fragment = new SetupNumberGameFragment();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.frag_setup, fragment)
+                .addToBackStack(null)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                .commit();
+
         database = FirebaseDatabase.getInstance();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_toolbar, menu);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_people:
+                Toast.makeText(this, "FAVORITE", Toast.LENGTH_LONG).show();
+                break;
+            case R.id.action_settings:
+                Toast.makeText(this, "SETTINGS", Toast.LENGTH_LONG).show();
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
 
